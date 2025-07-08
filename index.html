@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Azriel Dimas</title>
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Devicon for Tech Logos -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
+
+    <style>
+        :root {
+            --color-bg: #020617;
+            --color-primary: #7c3aed;
+            --color-secondary: #db2777;
+            --color-accent: #22d3ee;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--color-bg);
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        /* Animated Aurora Background */
+        .aurora-background {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden;
+        }
+        .aurora-background::before, .aurora-background::after {
+            content: ''; position: absolute; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at center, var(--color-primary), transparent 40%),
+                        radial-gradient(circle at center, var(--color-secondary), transparent 40%);
+            mix-blend-mode: screen; opacity: 0.2;
+            animation: aurora-flow 25s linear infinite;
+        }
+        .aurora-background::after {
+            background: radial-gradient(circle at center, var(--color-accent), transparent 40%);
+            animation: aurora-flow-2 25s linear infinite; animation-delay: -12.5s;
+        }
+        @keyframes aurora-flow {
+            0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+            50% { transform: translate(50%, 50%) rotate(180deg) scale(1.5); }
+            100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
+        }
+        @keyframes aurora-flow-2 {
+            0% { transform: translate(50%, 50%) rotate(0deg) scale(1.2); }
+            50% { transform: translate(-50%, -50%) rotate(180deg) scale(0.8); }
+            100% { transform: translate(50%, 50%) rotate(360deg) scale(1.2); }
+        }
+
+        /* Page Transition Effect */
+        main > section {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        main.page-transition > section {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* Glassmorphism Header */
+        header { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        
+        /* Timeline Styling */
+        .timeline { position: relative; max-width: 1200px; margin: 0 auto; }
+        .timeline::after {
+            content: ''; position: absolute; width: 3px;
+            background: linear-gradient(to bottom, var(--color-primary), var(--color-secondary));
+            top: 0; bottom: 0; left: 50%; margin-left: -1.5px;
+            transition: left 0.3s ease;
+        }
+        .timeline-item {
+            padding: 10px 40px; position: relative; background-color: inherit;
+            width: 50%; opacity: 0; transform: translateY(50px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .timeline-item.visible { opacity: 1; transform: translateY(0); }
+        .timeline-item::after {
+            content: ''; position: absolute; width: 20px; height: 20px;
+            right: -10px; background-color: var(--color-bg);
+            border: 4px solid var(--color-accent); top: 28px;
+            border-radius: 50%; z-index: 1; transition: all 0.3s ease;
+        }
+        .timeline-item:hover::after { transform: scale(1.2); box-shadow: 0 0 15px var(--color-accent); }
+        .timeline-left { left: 0; padding-right: 60px; }
+        .timeline-right { left: 50%; padding-left: 60px; }
+        .timeline-left::before, .timeline-right::before {
+            content: " "; height: 0; position: absolute; top: 35px;
+            width: 0; z-index: 1; border: medium solid #475569;
+        }
+        .timeline-left::before { right: 30px; border-width: 10px 0 10px 10px; border-color: transparent transparent transparent #475569; }
+        .timeline-right::before { left: 30px; border-width: 10px 10px 10px 0; border-color: transparent #475569 transparent transparent; }
+        .timeline-right::after { left: -10px; }
+        .timeline-content { padding: 20px 30px; background-color: #1e293b; position: relative; border-radius: 8px; border: 1px solid #334155; }
+        @media screen and (max-width: 768px) {
+            .timeline::after { left: 15px; }
+            .timeline-item { width: 100%; padding-left: 50px; padding-right: 15px; }
+            .timeline-item::before { left: 35px; border-width: 10px 10px 10px 0; border-color: transparent #475569 transparent transparent; }
+            .timeline-left::after, .timeline-right::after { left: 5px; }
+            .timeline-left, .timeline-right { left: 0%; }
+        }
+
+        /* Filter Tab Styling */
+        .filter-tab, .skill-tab {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        .filter-tab.active, .skill-tab.active {
+            color: var(--color-accent);
+            border-bottom-color: var(--color-accent);
+        }
+        .skill-pane {
+            transition: opacity 0.4s ease-in-out;
+        }
+        .skill-logo-item {
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .skill-logo-item:hover {
+            transform: translateY(-5px);
+            background-color: #1e293b;
+        }
+
+        /* Project Card Aurora Border Effect */
+        .project-card {
+            background-color: #0f172a;
+            position: relative;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid #334155;
+            transition: transform 0.3s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-8px) scale(1.02);
+        }
+        .project-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: conic-gradient(from calc(var(--angle) * 1rad), transparent 30%, var(--color-accent), var(--color-secondary), transparent 70%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: rotate 10s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .project-card:hover::before {
+            opacity: 1;
+        }
+        @property --angle {
+          syntax: '<angle>';
+          initial-value: 0deg;
+          inherits: false;
+        }
+        @keyframes rotate {
+          to { --angle: 360deg; }
+        }
+
+        /* Project Carousel Styling */
+        #project-carousel-wrapper { position: relative; }
+        #project-carousel { 
+            display: flex; 
+            overflow-x: auto; 
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch; /* for smooth scrolling on iOS */
+            scrollbar-width: none; /* for Firefox */
+        }
+        #project-carousel::-webkit-scrollbar {
+            display: none; /* for Chrome, Safari, and Opera */
+        }
+        .project-card-container { 
+            flex: 0 0 100%; 
+            scroll-snap-align: start;
+            padding: 0 10px;
+        }
+        @media (min-width: 768px) { .project-card-container { flex: 0 0 50%; } }
+        @media (min-width: 1024px) { .project-card-container { flex: 0 0 33.333%; } }
+        
+        /* Certificate Card */
+        .certificate-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .certificate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Preloader */
+        #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--color-bg); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 0.6s ease-out, visibility 0.6s ease-out; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #1e293b; border-top-color: var(--color-accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="text-slate-200">
+    
+    <div class="aurora-background"></div>
+    <div id="preloader"><div class="spinner"></div></div>
+
+    <!-- ===== HEADER / NAVBAR ===== -->
+    <header class="sticky top-0 z-50 border-b border-slate-800/50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-white tracking-wider">AD</a>
+            <ul class="hidden md:flex items-center space-x-8">
+                <li><a href="#about" class="nav-link hover:text-cyan-300 transition-colors duration-300 font-medium">About</a></li>
+                <li><a href="#experience" class="nav-link hover:text-cyan-300 transition-colors duration-300 font-medium">Experience</a></li>
+                <li><a href="#skills" class="nav-link hover:text-cyan-300 transition-colors duration-300 font-medium">Skills</a></li>
+                <li><a href="#projects" class="nav-link hover:text-cyan-300 transition-colors duration-300 font-medium">Projects</a></li>
+                <li><a href="#contact" class="nav-link hover:text-cyan-300 transition-colors duration-300 font-medium">Contact</a></li>
+            </ul>
+            <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none"><i data-lucide="menu" class="w-7 h-7"></i></button>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-900/90 backdrop-blur-lg">
+            <ul class="flex flex-col items-center space-y-6 py-6">
+                <li><a href="#about" class="nav-link-mobile hover:text-cyan-300">About</a></li>
+                <li><a href="#experience" class="nav-link-mobile hover:text-cyan-300">Experience</a></li>
+                <li><a href="#skills" class="nav-link-mobile hover:text-cyan-300">Skills</a></li>
+                <li><a href="#projects" class="nav-link-mobile hover:text-cyan-300">Projects</a></li>
+                <li><a href="#contact" class="nav-link-mobile hover:text-cyan-300">Contact</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+        <!-- ===== HERO SECTION ===== -->
+        <section id="hero" class="min-h-screen flex items-center relative -mt-[72px] pt-[72px]">
+            <div class="container mx-auto px-6 text-center">
+                <span class="text-cyan-300 font-semibold text-lg">Hello, I am</span>
+                <h1 class="text-5xl md:text-7xl font-extrabold text-white mt-3 mb-5 leading-tight bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-violet-500 to-cyan-400">Azriel Dimas Ash-Shidiqi</h1>
+                <p class="text-xl md:text-2xl text-slate-400 max-w-3xl mx-auto mb-10">A passionate <span class="text-white font-semibold">Computer Engineering student </span> dedicated in Data System Analyst, Software Development, and Computer Networks.</p>
+                <div class="flex items-center justify-center gap-4">
+                    <a href="#projects" class="nav-link bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg shadow-violet-500/30">View My Work</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== ABOUT ME SECTION ===== -->
+        <section id="about" class="py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16"><h2 class="text-4xl md:text-5xl font-bold text-white">About Me</h2><div class="w-24 h-1 bg-gradient-to-r from-violet-500 to-pink-500 mx-auto mt-4 rounded"></div></div>
+                <div class="grid md:grid-cols-5 gap-12 items-center">
+                    <div class="md:col-span-2 relative"><div class="absolute inset-0 bg-gradient-to-r from-violet-500 to-pink-500 rounded-lg transform -rotate-3 blur-lg opacity-40"></div><img src="me.jpeg" alt="My Photo" class="rounded-lg shadow-2xl w-full relative z-10" onerror="this.onerror=null;this.src='https://placehold.co/500x500/0f172a/9333ea?text=Image+Not+Found';"></div>
+                    <div class="md:col-span-3"><p class="text-lg mb-6 leading-relaxed">I am a third-year student in the Computer Engineering program at the Universitas Indonesia. Throughout my studies, I have explored various fields in computer engineering, including Digital Systems, Computer Networks, Databases, Network Security, Big Data, and Artificial Intelligent. Additionally, I have gained proficiency in several programming languages, such as Assembly, VHDL, C, C++, JavaScript, Java, SQL, and Python.</p><p class="text-lg mb-8 leading-relaxed">I continuously strive to enhance my technical skills through academic projects and assignments, while actively staying updated with technological advancements to broaden my knowledge and expertise in this field.</p></div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- ===== EXPERIENCE SECTION ===== -->
+        <section id="experience" class="py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16"><h2 class="text-4xl md:text-5xl font-bold text-white">Work & Organizational Experience</h2><div class="w-24 h-1 bg-gradient-to-r from-violet-500 to-pink-500 mx-auto mt-4 rounded"></div></div>
+                <!-- Filter Tabs -->
+                <div class="flex justify-center border-b border-slate-700 mb-12 space-x-4 md:space-x-8">
+                    <button data-filter="all" class="filter-tab active text-lg font-semibold py-2 px-4">All</button>
+                    <button data-filter="work" class="filter-tab text-lg font-semibold py-2 px-4">Work</button>
+                    <button data-filter="organization" class="filter-tab text-lg font-semibold py-2 px-4">Organization</button>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item" data-category="work">
+                        <div class="timeline-content">
+                            <div class="flex items-start gap-4">
+                                <img src="igloo.jpeg" alt="Indocyber Logo" class="w-12 h-12 rounded-md mt-1">
+                                <div>
+                                    <h3 class="text-xl font-bold text-white">Data System Analyst</h3>
+                                    <h4 class="text-md font-semibold text-cyan-300 mb-1">Indocyber Global Technology | Jakarta</h4>
+                                    <span class="text-sm text-slate-400">July 2025 - Present</span>
+                                    <p class="mt-3 text-slate-300 text-sm">Maintaining and Creating project of large-scale Data System using PySpark, PostgreSQL, and Tableau.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-category="work">
+                        <div class="timeline-content">
+                             <div class="flex items-start gap-4">
+                                <img src="pln.png" alt="PLN Logo" class="w-12 h-12 rounded-md mt-1">
+                                <div>
+                                    <h3 class="text-xl font-bold text-white">Website Developer</h3>
+                                    <h4 class="text-md font-semibold text-cyan-300 mb-1">PLN | Jakarta</h4>
+                                    <span class="text-sm text-slate-400">January 2025 - February 2025</span>
+                                    <p class="mt-3 text-slate-300 text-sm">Built web applications using React, Node.js, and PostgreSQL. Contributed to built and develop Back-end and Databases.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-category="organization">
+                        <div class="timeline-content">
+                            <div class="flex items-start gap-4">
+                                <img src="auav.jpeg" alt="AUAV UI Logo" class="w-12 h-12 rounded-md mt-1">
+                                <div>
+                                    <h3 class="text-xl font-bold text-white">Treasurer</h3>
+                                    <h4 class="text-md font-semibold text-cyan-300 mb-1">Vishwakarma Team - AUAV UI</h4>
+                                    <span class="text-sm text-slate-400">January 2024 - October 2024</span>
+                                    <p class="mt-3 text-slate-300 text-sm">Managing and Securing funding for team budget and expenses. Create a sponsorship strategies and securing the sponsors.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-category="organization">
+                        <div class="timeline-content">
+                            <div class="flex items-start gap-4">
+                                <img src="coolyeah.jpeg" alt="Coolyeah UI Logo" class="w-12 h-12 rounded-md mt-1">
+                                <div>
+                                    <h3 class="text-xl font-bold text-white">Project Officer</h3>
+                                    <h4 class="text-md font-semibold text-cyan-300 mb-1">Coolyeah UI</h4>
+                                    <span class="text-sm text-slate-400">March 2023 - October 2023</span>
+                                    <p class="mt-3 text-slate-300 text-sm">Led and manage team to plan and execute various event. Developing strategies to enhance operational efficiency by creating budget planning. Finding and Securing the sponsorship.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-category="organization">
+                        <div class="timeline-content">
+                            <div class="flex items-start gap-4">
+                                <img src="bem.jpeg" alt="BEM UI Logo" class="w-12 h-12 rounded-md mt-1">
+                                <div>
+                                    <h3 class="text-xl font-bold text-white">Staff of Student Empowerment and Innovation Department</h3>
+                                    <h4 class="text-md font-semibold text-cyan-300 mb-1">BEM UI</h4>
+                                    <span class="text-sm text-slate-400">March 2023 - December 2023</span>
+                                    <p class="mt-3 text-slate-300 text-sm">Enhance the Coolyeah UI 2023 project to develop both soft skills and hard skills for students of Universitas Indonesia by offering a variety of mentoring classes.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-category="organization">
+                        <div class="timeline-content">
+                            <div class="flex items-start gap-4">
+                                <img src="ieee.png" alt="IEEE SBUI Logo" class="w-12 h-12 rounded-md mt-1">
+                                <div>
+                                    <h3 class="text-xl font-bold text-white">Staff of Research and Development</h3>
+                                    <h4 class="text-md font-semibold text-cyan-300 mb-1">IEEE SBUI</h4>
+                                    <span class="text-sm text-slate-400">March 2023 - December 2023</span>
+                                    <p class="mt-3 text-slate-300 text-sm">Conducting quality control for both individuals in the internal of IEEE SBUI and the delivered programs throughout the administration, with the goal of the report output produced could give evaluation and constructive feedback for further improvement.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SKILLS SECTION (TABS + LOGOS) ===== -->
+        <section id="skills" class="py-24">
+            <div class="container mx-auto px-6">
+                 <div class="text-center mb-16"><h2 class="text-4xl md:text-5xl font-bold text-white">Skills & Technologies</h2><div class="w-24 h-1 bg-gradient-to-r from-violet-500 to-pink-500 mx-auto mt-4 rounded"></div></div>
+                <div class="w-full max-w-4xl mx-auto">
+                    <!-- Tab Headers -->
+                    <div class="flex flex-wrap justify-center border-b border-slate-700 mb-8 space-x-4 md:space-x-8">
+                        <button data-tab="language" class="skill-tab active text-lg font-semibold py-2 px-4">Language</button>
+                        <button data-tab="webapp" class="skill-tab text-lg font-semibold py-2 px-4">Web Application</button>
+                        <button data-tab="othertools" class="skill-tab text-lg font-semibold py-2 px-4">Other Tools</button>
+                        <button data-tab="certificates" class="skill-tab text-lg font-semibold py-2 px-4">Certificates</button>
+                    </div>
+                    <!-- Tab Content -->
+                    <div id="skill-content">
+                        <!-- Programming Language Pane -->
+                        <div id="language" class="skill-pane grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i data-lucide="cpu" class="w-16 h-16 text-gray-400"></i><span class="mt-2 text-sm font-medium">Assembly</span></div>
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i class="devicon-cplusplus-plain text-6xl text-blue-500"></i><span class="mt-2 text-sm font-medium">C/C++</span></div>
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i class="devicon-java-plain text-6xl text-orange-500"></i><span class="mt-2 text-sm font-medium">Java</span></div>
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i class="devicon-javascript-plain text-6xl text-yellow-400"></i><span class="mt-2 text-sm font-medium">JavaScript</span></div>
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i class="devicon-python-plain text-6xl text-yellow-400"></i><span class="mt-2 text-sm font-medium">Python</span></div>
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i data-lucide="database" class="w-16 h-16 text-blue-400"></i><span class="mt-2 text-sm font-medium">SQL</span></div>
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i data-lucide="circuit-board" class="w-16 h-16 text-green-400"></i><span class="mt-2 text-sm font-medium">VHDL</span></div>
+                        </div>
+                        <!-- Web Application Pane -->
+                        <div id="webapp" class="skill-pane hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+                             <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i class="devicon-react-original text-6xl text-cyan-400"></i><span class="mt-2 text-sm font-medium">React</span></div>
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i class="devicon-tailwindcss-plain text-6xl text-cyan-500"></i><span class="mt-2 text-sm font-medium">Tailwind CSS</span></div>
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i class="devicon-nodejs-plain text-6xl text-green-500"></i><span class="mt-2 text-sm font-medium">Node.js</span></div>
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i class="devicon-express-original text-6xl"></i><span class="mt-2 text-sm font-medium">Express.js</span></div>
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i class="devicon-django-plain text-6xl text-green-600"></i><span class="mt-2 text-sm font-medium">Django</span></div>
+                        </div>
+                        <!-- Other Tools Pane -->
+                        <div id="othertools" class="skill-pane hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i class="devicon-git-plain text-6xl text-orange-600"></i><span class="mt-2 text-sm font-medium">Git</span></div>
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i class="devicon-docker-plain text-6xl text-blue-500"></i><span class="mt-2 text-sm font-medium">Docker</span></div>
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i data-lucide="bar-chart-2" class="w-16 h-16 text-yellow-500"></i><span class="mt-2 text-sm font-medium">Power BI</span></div>
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i data-lucide="layout-dashboard" class="w-16 h-16 text-blue-400"></i><span class="mt-2 text-sm font-medium">Tableau</span></div>
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i class="devicon-postgresql-plain text-6xl text-blue-400"></i><span class="mt-2 text-sm font-medium">PostgreSQL</span></div>
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i class="devicon-androidstudio-plain text-6xl text-green-400"></i><span class="mt-2 text-sm font-medium">Android Studio</span></div>
+                            <div class="skill-logo-item flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-lg border border-slate-700"><i data-lucide="send" class="w-16 h-16 text-orange-500"></i><span class="mt-2 text-sm font-medium">Postman</span></div>
+                        </div>
+                         <!-- Certificates Pane -->
+                        <div id="certificates" class="skill-pane hidden max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
+                            <a href="#" target="_blank" class="certificate-card block p-6 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-bold text-white text-lg">CCNA: Introduction to Networks</h3>
+                                        <p class="text-sm text-slate-400">Issued by Cisco - Dec 2024</p>
+                                    </div>
+                                    <i data-lucide="award" class="w-10 h-10 text-cyan-400"></i>
+                                </div>
+                            </a>
+                            <a href="#" target="_blank" class="certificate-card block p-6 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-bold text-white text-lg">CCNA: Switching, Routing, and Wireless Essentials</h3>
+                                        <p class="text-sm text-slate-400">Issued by Cisco - Dec 2024</p>
+                                    </div>
+                                    <i data-lucide="award" class="w-10 h-10 text-cyan-400"></i>
+                                </div>
+                            </a>
+                             <a href="#" target="_blank" class="certificate-card block p-6 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-bold text-white text-lg">Ethical Hacker</h3>
+                                        <p class="text-sm text-slate-400">Issued by Cisco - Nov 2024</p>
+                                    </div>
+                                    <i data-lucide="award" class="w-10 h-10 text-cyan-400"></i>
+                                </div>
+                            </a>
+                             <a href="#" target="_blank" class="certificate-card block p-6 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-bold text-white text-lg">CCNA: Enterprise Networking, Security, and Automation</h3>
+                                        <p class="text-sm text-slate-400">Issued by Cisco - Jul 2024</p>
+                                    </div>
+                                    <i data-lucide="award" class="w-10 h-10 text-cyan-400"></i>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== PROJECTS SECTION ===== -->
+        <section id="projects" class="py-24">
+            <div class="container mx-auto px-6"><div class="text-center mb-16"><h2 class="text-4xl md:text-5xl font-bold text-white">Featured Projects</h2><div class="w-24 h-1 bg-gradient-to-r from-violet-500 to-pink-500 mx-auto mt-4 rounded"></div></div></div>
+            <div id="project-carousel-wrapper" class="relative">
+                <div id="project-carousel" class="cursor-grab">
+                    <a href="https://github.com/AzDimas/JBus-Android" target="_blank" class="project-card-container">
+                        <div class="project-card p-6 flex flex-col h-full">
+                            <img src="jbus.jpg" class="w-full h-48 object-cover rounded-md mb-4">
+                            <h3 class="text-xl font-bold text-white mb-2">JBus Android App</h3>
+                            <p class="text-slate-400 mb-4 text-sm flex-grow">An Android application for a bus ticketing system, allowing users to book and manage their bus tickets efficiently.</p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="text-xs font-semibold bg-green-900/50 text-green-300 px-2 py-1 rounded">Java</span>
+                                <span class="text-xs font-semibold bg-green-900/50 text-green-300 px-2 py-1 rounded">Android Studio</span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://github.com/AzDimas/PSD-AP06" target="_blank" class="project-card-container">
+                        <div class="project-card p-6 flex flex-col h-full">
+                            <img src="sos.jpg" class="w-full h-48 object-cover rounded-md mb-4">
+                            <h3 class="text-xl font-bold text-white mb-2">SOS Message Transmitter</h3>
+                            <p class="text-slate-400 mb-4 text-sm flex-grow">A SOS Message Transmitter to encrypt/decrypt message transmitter with implementing Casear shift logic.</p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="text-xs font-semibold bg-yellow-900/50 text-yellow-300 px-2 py-1 rounded">Python</span>
+                                <span class="text-xs font-semibold bg-blue-900/50 text-blue-300 px-2 py-1 rounded">Pandas</span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://github.com/AzDimas/Smart-Chiller-Kel19" target="_blank" class="project-card-container"><div class="project-card p-6 flex flex-col h-full"><img src="smart-chiller.png" class="w-full h-48 object-cover rounded-md mb-4"><h3 class="text-xl font-bold text-white mb-2">Smart Chiller System</h3><p class="text-slate-400 mb-4 text-sm flex-grow">An IoT-based project to create a smart chiller system, likely involving hardware programming and sensor integration.</p><div class="flex flex-wrap gap-2 mb-4"><span class="text-xs font-semibold bg-blue-900/50 text-blue-300 px-2 py-1 rounded">C++</span><span class="text-xs font-semibold bg-gray-700/50 text-gray-300 px-2 py-1 rounded">IoT</span></div></div></a>
+                    <a href="https://github.com/AzDimas/ProjectPals" target="_blank" class="project-card-container"><div class="project-card p-6 flex flex-col h-full"><img src="pp.jpg" class="w-full h-48 object-cover rounded-md mb-4"><h3 class="text-xl font-bold text-white mb-2">ProjectPals</h3><p class="text-slate-400 mb-4 text-sm flex-grow">A collaborative platform for managing projects, likely featuring user authentication, task management, and team collaboration.</p><div class="flex flex-wrap gap-2 mb-4"><span class="text-xs font-semibold bg-sky-900/50 text-sky-300 px-2 py-1 rounded">React</span><span class="text-xs font-semibold bg-green-900/50 text-green-300 px-2 py-1 rounded">Node.js</span></div></div></a>
+                    <a href="https://github.com/AzDimas/BikeGuardAsli" target="_blank" class="project-card-container"><div class="project-card p-6 flex flex-col h-full"><img src="bikeguard.jpg" class="w-full h-48 object-cover rounded-md mb-4"><h3 class="text-xl font-bold text-white mb-2">BikeGuard System</h3><p class="text-slate-400 mb-4 text-sm flex-grow">A security system for bicycles, potentially involving hardware, sensors, and a software interface for monitoring.</p><div class="flex flex-wrap gap-2 mb-4"><span class="text-xs font-semibold bg-orange-900/50 text-orange-300 px-2 py-1 rounded">Java</span><span class="text-xs font-semibold bg-gray-700/50 text-gray-300 px-2 py-1 rounded">System Design</span></div></div></a>
+                </div>
+                <button id="prev-btn" class="absolute top-1/2 left-4 -translate-y-1/2 bg-slate-800/50 p-2 rounded-full hover:bg-slate-700 transition-colors z-10"><i data-lucide="chevron-left"></i></button>
+                <button id="next-btn" class="absolute top-1/2 right-4 -translate-y-1/2 bg-slate-800/50 p-2 rounded-full hover:bg-slate-700 transition-colors z-10"><i data-lucide="chevron-right"></i></button>
+            </div>
+        </section>
+        
+        <!-- ===== CONTACT SECTION ===== -->
+        <section id="contact" class="py-24">
+            <div class="container mx-auto px-6 text-center">
+                <div class="max-w-3xl mx-auto">
+                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Get In Touch</h2>
+                    <div class="w-24 h-1 bg-gradient-to-r from-violet-500 to-pink-500 mx-auto mt-4 rounded mb-8"></div>
+                    <p class="text-slate-400 text-lg max-w-2xl mx-auto mb-10">I'm always open to new opportunities. If you have a question or just want to say hi, feel free to reach out.</p>
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=dimasazriel45@gmail.com" target="_blank" class="bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 inline-block mb-12 shadow-lg shadow-violet-500/30">Contact via Gmail</a>
+                    <div class="flex justify-center items-center space-x-8">
+                        <a href="https://github.com/AzDimas" target="_blank" class="text-slate-400 hover:text-white transition-transform duration-300 hover:scale-110"><i data-lucide="github" class="w-8 h-8"></i></a>
+                        <a href="https://www.linkedin.com/in/azriel-dimas/" target="_blank" class="text-slate-400 hover:text-white transition-transform duration-300 hover:scale-110"><i data-lucide="linkedin" class="w-8 h-8"></i></a>
+                        <a href="https://www.instagram.com/dimsazrl/" target="_blank" class="text-slate-400 hover:text-white transition-transform duration-300 hover:scale-110"><i data-lucide="instagram" class="w-8 h-8"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-slate-800/50">
+        <div class="container mx-auto px-6 py-8 text-center"><p class="text-slate-500 text-sm">&copy; 2025 Azriel Dimas. Designed & Coded with Passion.</p></div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const preloader = document.getElementById('preloader');
+            window.addEventListener('load', () => {
+                preloader.style.opacity = '0';
+                setTimeout(() => { preloader.style.visibility = 'hidden'; }, 600);
+            });
+
+            lucide.createIcons();
+
+            // Mobile Menu Logic
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuLinks = document.querySelectorAll('.nav-link-mobile');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+
+            // Page Transition Logic for Desktop
+            const navLinks = document.querySelectorAll('.nav-link');
+            const mainContent = document.querySelector('main');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    mainContent.classList.add('page-transition');
+                    setTimeout(() => {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        setTimeout(() => mainContent.classList.remove('page-transition'), 50);
+                    }, 300);
+                });
+            });
+            
+            // Experience Filter Logic
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            
+            const reorderTimeline = () => {
+                const visibleItems = document.querySelectorAll('.timeline-item:not(.hidden)');
+                visibleItems.forEach((item, index) => {
+                    item.classList.remove('timeline-left', 'timeline-right');
+                    if (window.innerWidth <= 768) {
+                        item.classList.add('timeline-left');
+                    } else {
+                        if (index % 2 === 0) {
+                            item.classList.add('timeline-left');
+                        } else {
+                            item.classList.add('timeline-right');
+                        }
+                    }
+                });
+            };
+
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const filter = tab.getAttribute('data-filter');
+                    
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    timelineItems.forEach(item => {
+                        if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                            item.classList.remove('hidden');
+                        } else {
+                            item.classList.add('hidden');
+                        }
+                    });
+                    reorderTimeline();
+                });
+            });
+            
+            // Initial order
+            reorderTimeline();
+            window.addEventListener('resize', reorderTimeline);
+
+
+            // Skill Tabs Logic
+            const skillTabs = document.querySelectorAll('.skill-tab');
+            const skillPanes = document.querySelectorAll('.skill-pane');
+            skillTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetPaneId = tab.getAttribute('data-tab');
+                    
+                    skillTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    skillPanes.forEach(pane => {
+                        if (pane.id === targetPaneId) {
+                            pane.classList.remove('hidden');
+                            pane.style.opacity = 0;
+                            setTimeout(() => pane.style.opacity = 1, 50);
+                        } else {
+                            pane.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            // Intersection Observer for animations
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        if (entry.target.classList.contains('timeline-item')) {
+                            entry.target.classList.add('visible');
+                        }
+                    }
+                });
+            }, { threshold: 0.2 });
+            document.querySelectorAll('.timeline-item').forEach(item => observer.observe(item));
+
+            // Carousel Logic (Simplified & Corrected)
+            const carousel = document.getElementById('project-carousel');
+            if (carousel) {
+                const prevBtn = document.getElementById('prev-btn');
+                const nextBtn = document.getElementById('next-btn');
+
+                const scrollByPage = () => {
+                    return carousel.parentElement.clientWidth;
+                };
+
+                prevBtn.addEventListener('click', () => {
+                    carousel.scrollBy({ left: -scrollByPage(), behavior: 'smooth' });
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    carousel.scrollBy({ left: scrollByPage(), behavior: 'smooth' });
+                });
+
+                const updateButtonState = () => {
+                    const scrollLeft = carousel.scrollLeft;
+                    const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+                    
+                    prevBtn.disabled = scrollLeft <= 0;
+                    nextBtn.disabled = scrollLeft >= maxScroll - 1;
+                    
+                    prevBtn.style.opacity = prevBtn.disabled ? '0.5' : '1';
+                    nextBtn.style.opacity = nextBtn.disabled ? '0.5' : '1';
+                    prevBtn.style.cursor = prevBtn.disabled ? 'not-allowed' : 'pointer';
+                    nextBtn.style.cursor = nextBtn.disabled ? 'not-allowed' : 'pointer';
+                };
+
+                carousel.addEventListener('scroll', updateButtonState);
+                updateButtonState(); // Initial check
+            }
+        });
+    </script>
+
+</body>
+</ht
